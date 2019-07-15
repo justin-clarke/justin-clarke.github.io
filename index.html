@@ -1,0 +1,85 @@
+<!-- 
+/*********************************************************************
+** Filename: index.html
+** Author: Justin Clarke
+** Date: 7/7/19
+** class: CS373
+** Description: Week 3 write up
+*********************************************************************/
+-->
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 3 Write Up</title>
+  <link rel="stylesheet" href="stylesheet.css" type="text/css">
+ </head>
+ <body>
+	<div class="title", id="title">
+		<h1>Week 3 Write Up</h1>
+	</div>
+	<div class="text", id="text">
+		<p> By Justin Clarke</p>
+		<!--    <p>All images are from the lecture slides</p>    -->
+		<br>
+		<br>
+		<h3>Attack Vectors and Attack Flow</h3>
+
+		<p>Malware defense is a broad topic that includes analyzing malware attacks, identifying how the malware behaves at each stage of an attack, and developing tools and strategies for detecting and removing malware. Two major tools used in this area are Yara, which allows the user to write “signatures” that are used to match strings in files and identify suspicious code, and Cuckoo which is a replication system that allows researchers to run malware and analyze its behavior. </p>
+
+		<p>An Attack Graph displays the malware lifecycle. There are 4 major sections: first contact, local execution, establish presence, and malicious activity. The first contact section includes the different ways malware might come in contact with a user’s system including: through an unsolicited message, inserting physical media, visiting a compromised website, and physical access to a user’s hardware. The local execution section describes ways the malicious code could get executed on a user’s machine including: convince the user to run an executable, taking advantage of a file format or browser vulnerability, or through a phishing attack. Once the malicious code has been executed it will usually attempt to remain persistent on the infected machine so it will survive a restart of the hardware. The establish presence section describes ways the malware may attempt remain viable including: downloading and installing additional malware, persisting on the system by modifying or installing a service or through rootkit techniques. The malicious activity section describes ways the malware may behave once it has established a presence on the infected machine including: operating a botnet, running adware or scareware to get the user to pay for fake anti-virus services, or capture sensitive data with keyloggers or screen scrapers. Finally, malware that captures data will often attempt to communicate with a command and control server. </p>
+
+		<figure>
+		<img src="images/attackGraph.jpg" width=700px height=500px>
+		<figcaption>Attack Graph from OSU CS373 Week 3 slides</figcaption>
+		</figure>
+
+		<p>First contact, when malware first encounters the user’s machine, is often achieved through email with malicious attachments or through instant messaging. Other possible vectors are malvertising where clicking an ad introduces the malware, or through poisoned search results where malware creators game the algorithm of search sites and get malicious links to appear in the results. A common approach is to use a “watering hole”, or site where many people go daily or congregate as a launching point for a malware attack. Some ways to prevent first contact are using blacklists of known malicious sites (or, similarly using whitelists of known trusted sites), script blockers in browsers, or physically disabling access points to the hardware (e.g. putting epoxy in the USB slot). </p>
+
+		<p>Local execution is often achieved through social engineering where users knowingly run an executable that they believe is harmless, but actually contains the malware. Another common method to achieve local execution is through browser-based exploits that run scripts directly or through java or pdfs. It is also possible to use the autorun features of USB devices to execute malicious code. </p>
+
+		<p>In order to establish a presence on an infected machine and remain undetected malware will often use names that are similar to system files the user will expect to find on their machine (e.g. svchest instead of svchost). It is also common for malware to disguise itself by changing  the data or time stamps on the malicious files. There are even cases where the malware will alter the files the system uses when it is booted up so the malware is reinstalled each time. In addition, there has been an increase in malware taking advantage of legitimately signed executables in order to remain undetected. For example, malware may run a legitimate program but give it an overly long command, which overflows the buffer and then executes a shell script. </p>
+
+		<h3>Opportunities For Defense</h3>
+
+		<p>There are several popular approaches to defending against malware. Each type of technology tends to concentrate on a particular point of entry into the system. For example, a firewall protects against malicious websites, but not against an attacker running a malicious file from a USB drive. The best approach is to use “layered defense” or “defense in depth” where there are security elements at each possible point of first contact with malware. </p>
+
+		<figure>
+		<img src="images/ringGraph.jpg" width=700px height=500px>
+		<figcaption>From OSU CS373 Week 3 slides</figcaption>
+		</figure>
+
+		<p>A disturbing trend to keep in mind when choosing or designing anti malware tools is that many recent attacks have not required a file to be written to disk and executed.  A recent exploit kit populated a buffer and passed control to that buffer without being written to disk, which could bypass file-based anti-virus techniques. It is becoming necessary to move towards monitoring of behaviors and beyond just examining files. In fact, an image in memory that is not backed by a file becomes extremely suspicious turning an advantage for the attacker into a disadvantage. </p>
+
+
+		<h3>Tools For Analysis</h3>
+
+		<p>Malware analysis aims to discover if a threat is present, and also to isolate, classify, and remediate malicious code. It also aims to defend against future attacks and to describe the attack to other users and researchers (from CS373 Week 3 slides).
+
+		<p>Yara is a tool developed by Google for the tuned scanning of files or memory. By writing a Yara rule, or signature, you can define a pattern of strings that the system can search for in files to identify suspicious or malicious code. If there are similar strings found in several files associated with a given malware attack, a short and simple Yara signature can be used to scan for them efficiently. This is important because the code used in anti-virus software is proprietary and inaccessible to the user, so they are unable to quickly search their system for strings associated with a known attack. It is also important that Yara signatures only identify malicious files and do not return false positive results for non-malicious files.</p>
+
+		<figure>
+		<img src="images/YaraRule.jpg" width=700px height=500px>
+		<figcaption>Example Yara rule from OSU CS373 Week 3 showing that all 7 malicious files were detected with only the 2 defined strings.</figcaption>
+		</figure>
+
+		<p>Another important tool that is used in malware analysis is Cuckoo. Cuckoo is a replication system that is open source and popular with researchers. It runs on the host and controls the VM where it runs an operating system. Cuckoo provides a false internet connection and serves files when requested, as well as providing memory dumps. This allows researchers to observe how malware behaves when it is run. Cuckoo is difficult for malware to detect because it randomizes the name of the DLL file when it is running. Both the client and server are written in Python.</p>
+
+		<figure>
+		<img src="images/cuckooDesign.jpg" width=700px height=500px>
+		<figcaption>Cuckoo design from CS373 Week 3 slides</figcaption>
+		</figure>
+
+		<figure>
+		<img src="images/cuckooResults.jpg" width=700px height=500px>
+		<figcaption>Cuckoo results from CS373 Week 3 slides</figcaption>
+		</figure>
+
+		<h3>Analysis Assignment</h3>
+		<p>After examining the files in the Class 2 folder, I am most suspicious of the file with the MD5 hash: 068D5B62254DC582F3697847C16710B7. The header of the file starts with MZ, so it is definitely an executable. There are several calls to getKeyboardLayout and activateKeyboardLayout. There are calls to regOpenKey and regCloseKey and it also gets the environment settings. Due to all the calls related to keyboard layout, I am suspicious it is a keylogging program. I was able to isolate that file from the other malware candidates using a Yara signiture of just one line: "9h:U<". This does not result in any false positives when run against the Windows/System32 folder, but I am still leary because I don't know what that particular string represents or how it might show up in another legitimate program.</p>
+		<br>
+		<br> 
+	<div>
+ </body>
+</html>
