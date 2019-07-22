@@ -2,9 +2,9 @@
 /*********************************************************************
 ** Filename: index.html
 ** Author: Justin Clarke
-** Date: 7/7/19
+** Date: 7/21/19
 ** class: CS373
-** Description: Week 3 write up
+** Description: Week 4 write up
 *********************************************************************/
 -->
 <!DOCTYPE html>
@@ -12,74 +12,88 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Week 3 Write Up</title>
+  <title>Week 4 Write Up</title>
   <link rel="stylesheet" href="stylesheet.css" type="text/css">
  </head>
  <body>
 	<div class="title", id="title">
-		<h1>Week 3 Write Up</h1>
+		<h1>Week 4 Write Up</h1>
 	</div>
 	<div class="text", id="text">
 		<p> By Justin Clarke</p>
-		<!--    <p>All images are from the lecture slides</p>    -->
 		<br>
 		<br>
-		<h3>Attack Vectors and Attack Flow</h3>
+		<h3>Software Vulnerabilities And Exploits</h3>
 
-		<p>Malware defense is a broad topic that includes analyzing malware attacks, identifying how the malware behaves at each stage of an attack, and developing tools and strategies for detecting and removing malware. Two major tools used in this area are Yara, which allows the user to write “signatures” that are used to match strings in files and identify suspicious code, and Cuckoo which is a replication system that allows researchers to run malware and analyze its behavior. </p>
+		<p>The term “hacking” refers to using a system or program in a way other than what was intended. There is nothing magic about it. It simply entails using unexpected behavior to put the system in a state the designer did not anticipate, and using that state to perform the actions the attacker desires.</p>
 
-		<p>An Attack Graph displays the malware lifecycle. There are 4 major sections: first contact, local execution, establish presence, and malicious activity. The first contact section includes the different ways malware might come in contact with a user’s system including: through an unsolicited message, inserting physical media, visiting a compromised website, and physical access to a user’s hardware. The local execution section describes ways the malicious code could get executed on a user’s machine including: convince the user to run an executable, taking advantage of a file format or browser vulnerability, or through a phishing attack. Once the malicious code has been executed it will usually attempt to remain persistent on the infected machine so it will survive a restart of the hardware. The establish presence section describes ways the malware may attempt remain viable including: downloading and installing additional malware, persisting on the system by modifying or installing a service or through rootkit techniques. The malicious activity section describes ways the malware may behave once it has established a presence on the infected machine including: operating a botnet, running adware or scareware to get the user to pay for fake anti-virus services, or capture sensitive data with keyloggers or screen scrapers. Finally, malware that captures data will often attempt to communicate with a command and control server. </p>
+		<p>Most attacks in the past have targeted systems exposed to the wider internet. Over time companies have made it more difficult to access their systems from outside their network, or “hardened their perimeter.” This has led to an increase in the targeting of users within an organization through phishing or social engineering attacks. One an attacker gets control of a machine inside an organization’s network they can use it to launch an attack on the rest of the network from within. This generally entails targeting a user’s browser.</p>
+
+		<p> Computer systems have multiple types of vulnerabilities including configuration vulnerabilities, logic vulnerabilities, storage vulnerabilities, and input validation vulnerabilities. There are different ways to exploit each type of vulnerability, and each method requires a different type of access to the user’s system.</p>
+
+		<p>Configuration vulnerabilities refer to mistakes made by the user, such as using weak passwords or choosing to disable the security measures on their machine. Logic vulnerabilities refer to authorization issues or failure to properly protect sensitive parts of a program. Storage vulnerabilities result from inadequate encryption of stored data. Input validation vulnerabilities result when a user is able to corrupt memory or launch a code injection attack.</p>
+
+		<p>WinDbg, or “win debug” is a program that allows user’s to freeze execution of a given program and interact with it and examine the state at any point in the execution. It is similar to gdb, but for windows processes. The user can set break points, step into or over function calls and examine variable values and locations in memory.</p>
+
 
 		<figure>
-		<img src="images/attackGraph.jpg" width=700px height=500px>
-		<figcaption>Attack Graph from OSU CS373 Week 3 slides</figcaption>
+		<img src="winDbg.jpg" width=700px height=500px>
+		<figcaption>Image from: http://blog.ningzhang.org/2008/12/silverlight-debugging-with-windbg-and.html</figcaption>
 		</figure>
 
-		<p>First contact, when malware first encounters the user’s machine, is often achieved through email with malicious attachments or through instant messaging. Other possible vectors are malvertising where clicking an ad introduces the malware, or through poisoned search results where malware creators game the algorithm of search sites and get malicious links to appear in the results. A common approach is to use a “watering hole”, or site where many people go daily or congregate as a launching point for a malware attack. Some ways to prevent first contact are using blacklists of known malicious sites (or, similarly using whitelists of known trusted sites), script blockers in browsers, or physically disabling access points to the hardware (e.g. putting epoxy in the USB slot). </p>
 
-		<p>Local execution is often achieved through social engineering where users knowingly run an executable that they believe is harmless, but actually contains the malware. Another common method to achieve local execution is through browser-based exploits that run scripts directly or through java or pdfs. It is also possible to use the autorun features of USB devices to execute malicious code. </p>
+		<p>WinDbg must be attached to a specific process before you can control execution and analyze any results. All numbers appear in hexadecimal format. Below are some common and useful commands:</p>
 
-		<p>In order to establish a presence on an infected machine and remain undetected malware will often use names that are similar to system files the user will expect to find on their machine (e.g. svchest instead of svchost). It is also common for malware to disguise itself by changing  the data or time stamps on the malicious files. There are even cases where the malware will alter the files the system uses when it is booted up so the malware is reinstalled each time. In addition, there has been an increase in malware taking advantage of legitimately signed executables in order to remain undetected. For example, malware may run a legitimate program but give it an overly long command, which overflows the buffer and then executes a shell script. </p>
+		<ul>
+  			<li>lm - list modules</li>
+			<li>lmf m [string] - searches (can use wildcards)</li>
+			<li>bp simpleStackAndHeap!main - set breakpoint at main function</li>
+			<li>bl - lists breakpoints</li>
+			<li>g - go to next breakpoint</li>
+			<li>dd - display a d word of memory (i.e. dd eax shows values in eax. dd poi(esp) treats the value in esp as a pointer)</li>
+			<li>u - unassembled</li>
+			<li>formats [value] - list different formats for the given value (i.e. !formats 11)</li>
+			<li>db - show local variables</li>
+			<li>.hh - help system</li>
+			<li>da - display as an ascii string</li>
+			<li>du - display a unicode string</li>
+			<li>t - take a step into next function (t 5 means take 5 steps)</li>
+			<li>p - step over (p b executes 11 instructions since b = 11 in hex)</li>
+			<li>g [addr] - go to a particular address</li>
+			<li>pt - execute until return</li>
+			<li>r - views registers (r eip gives value in eip)</li>
+			<li>!teb - stack (stack base and limit are the beginning and end of stack. specific for thread) Stack base and stack limit are total size of stack</li>
+			<li>!peb - heap (specific for the process)</li> 
+			<li>!address - says what section the address is in (stack, heap, etc.) (!address psi)</li>
+			<li>k - show call stack</li>
+			<li>!byakugan: will load a program that will read registers and tell you the offset of each one using a non repeating string from metasploit</li> 
+			<li>!heap -p -a eax - gives information about the heap  (-p means page heap, -a means address, eax asked about that register)</li>
+			<li>!heap -stat - gives details about all the heap handles (first one is default process heap)</li>
+			<li>!heap -flt -s [size] - searches for all allocations of a given size</li>
+			<li>~ - show threads</li>
+			<li>!threads - gives details about each thread</li>
+			<li>u eip L10 - the value subtracted from esp is the size of the variables</li>
+			<li>q - quit</li>
+		</ul>
 
-		<h3>Opportunities For Defense</h3>
-
-		<p>There are several popular approaches to defending against malware. Each type of technology tends to concentrate on a particular point of entry into the system. For example, a firewall protects against malicious websites, but not against an attacker running a malicious file from a USB drive. The best approach is to use “layered defense” or “defense in depth” where there are security elements at each possible point of first contact with malware. </p>
+		<p>Another important tool is metasploit. Metasploit is an open source collection of payloads of known exploits that can be used when testing a system’s defensive capabilities or when developing new exploits.</p>
 
 		<figure>
-		<img src="images/ringGraph.jpg" width=700px height=500px>
-		<figcaption>From OSU CS373 Week 3 slides</figcaption>
+		<img src="metasploit.jpg" width=700px height=500px>
+		<figcaption>Image from: https://thehackernews.com/2011/10/metasploit-community-edition-advance.html</figcaption>
 		</figure>
 
-		<p>A disturbing trend to keep in mind when choosing or designing anti malware tools is that many recent attacks have not required a file to be written to disk and executed.  A recent exploit kit populated a buffer and passed control to that buffer without being written to disk, which could bypass file-based anti-virus techniques. It is becoming necessary to move towards monitoring of behaviors and beyond just examining files. In fact, an image in memory that is not backed by a file becomes extremely suspicious turning an advantage for the attacker into a disadvantage. </p>
+		<p>In order to exploit a vulnerability it is necessary to trigger the vulnerability to gain control of the program. This usually causes the program to go into a state that is an edge condition. For example, it may involve input that causes a series of JavaScript calls. At that point a hacker will deliver their payload, which is what executes the malicious code. Usually, the payload is in the form of assembly code that executes a shell script. A common example for demonstration is launching the calculator from internet explorer.</p>
+
+		<p>Memory corruption consists of “accessing memory (reading or writing to the stack or heap) in an invalid way which results in undefined behavior.” The goal of an attacker is to exploit this undefined behavior or state to their advantage. This is often possible when a program expects some kind of input from a user and has not properly protected against malicious input. There are several types of weaknesses that might allow this type of attack including: Lifetime control, uninitialized memory, array index calculations, buffer length calculations (see more at http://cwe.mitre.org/). </p>
+
+		<p>With memory corruption attacks it is not always necessary to have code execute in the payload. For example, when overwriting a buffer it is possible to alter other areas of memory, like variables that may influence the program behavior or return addresses, etc. In order to perform these types of attacks it is important to understand the structure of the stack in memory and exactly how many bytes are between the end of the buffer the attacker has access to and the point in memory they wish to overwrite. It is possible to put executable code on the stack using the buffer overflow method. Modern OS’s are able to mitigate this type of attack, so there are now better ways to get malicious code executed.</p>
+
+		<p>One type of memory corruption attack is to overflow a buffer with an enormous amount of data that fills the entire stack. Then use WinDbg to determine the offset of the return address. Store the malicious shell code in memory and determine the address, then overwrite the return address with the address of the shell code. Another type of attack is called a “trampoline” attack where the attacker finds a module loaded at a static address and finds “jmp esp” command somewhere in the memory space (within another command). Then by positioning the shell code payload after esp the attacker can invoke the jmp esp command and cause the shell code to be executed. </p>
+
+		<br></br>
 
 
-		<h3>Tools For Analysis</h3>
-
-		<p>Malware analysis aims to discover if a threat is present, and also to isolate, classify, and remediate malicious code. It also aims to defend against future attacks and to describe the attack to other users and researchers (from CS373 Week 3 slides).
-
-		<p>Yara is a tool developed by Google for the tuned scanning of files or memory. By writing a Yara rule, or signature, you can define a pattern of strings that the system can search for in files to identify suspicious or malicious code. If there are similar strings found in several files associated with a given malware attack, a short and simple Yara signature can be used to scan for them efficiently. This is important because the code used in anti-virus software is proprietary and inaccessible to the user, so they are unable to quickly search their system for strings associated with a known attack. It is also important that Yara signatures only identify malicious files and do not return false positive results for non-malicious files.</p>
-
-		<figure>
-		<img src="images/YaraRule.jpg" width=700px height=500px>
-		<figcaption>Example Yara rule from OSU CS373 Week 3 showing that all 7 malicious files were detected with only the 2 defined strings.</figcaption>
-		</figure>
-
-		<p>Another important tool that is used in malware analysis is Cuckoo. Cuckoo is a replication system that is open source and popular with researchers. It runs on the host and controls the VM where it runs an operating system. Cuckoo provides a false internet connection and serves files when requested, as well as providing memory dumps. This allows researchers to observe how malware behaves when it is run. Cuckoo is difficult for malware to detect because it randomizes the name of the DLL file when it is running. Both the client and server are written in Python.</p>
-
-		<figure>
-		<img src="images/cuckooDesign.jpg" width=700px height=500px>
-		<figcaption>Cuckoo design from CS373 Week 3 slides</figcaption>
-		</figure>
-
-		<figure>
-		<img src="images/cuckooResults.jpg" width=700px height=500px>
-		<figcaption>Cuckoo results from CS373 Week 3 slides</figcaption>
-		</figure>
-
-		<h3>Analysis Assignment</h3>
-		<p>After examining the files in the Class 2 folder, I am most suspicious of the file with the MD5 hash: 068D5B62254DC582F3697847C16710B7. The header of the file starts with MZ, so it is definitely an executable. There are several calls to getKeyboardLayout and activateKeyboardLayout. There are calls to regOpenKey and regCloseKey and it also gets the environment settings. Due to all the calls related to keyboard layout, I am suspicious it is a keylogging program. I was able to isolate that file from the other malware candidates using a Yara signiture of just one line: "9h:U<". This does not result in any false positives when run against the Windows/System32 folder, but I am still leary because I don't know what that particular string represents or how it might show up in another legitimate program.</p>
-		<br>
-		<br> 
 	<div>
  </body>
 </html>
